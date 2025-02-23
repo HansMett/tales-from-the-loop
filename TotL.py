@@ -76,7 +76,12 @@ beschreibung = {
 
 # Inventar mit `session_state`
 st.subheader("Inventar")
-inventar = [st.text_input(f"Gegenstand {i+1}", value=st.session_state.get("inventar", [""])[i]) for i in range(3)]
+# Stelle sicher, dass die Liste genau 3 Elemente hat
+session_inventar = st.session_state.get("inventar", ["", "", ""])  # Standardwert mit 3 leeren Strings
+session_inventar += [""] * (3 - len(session_inventar))  # Falls zu kurz, auffüllen
+
+# Inventar-Eingabefelder
+inventar = [st.text_input(f"Gegenstand {i+1}", value=session_inventar[i]) for i in range(3)]
 
 # Versteck & Notizen mit `session_state`
 versteck = st.text_area("Versteck", value=st.session_state.get("versteck", ""))
