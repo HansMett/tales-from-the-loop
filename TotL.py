@@ -83,60 +83,48 @@ inventar = [st.text_input(f"Gegenstand {i+1}") for i in range(3)]
 versteck = st.text_area("Versteck")
 notizen = st.text_area("Zusätzliche Notizen")
 
-# 🔹 **Speichern als JSON & CSV**
-def save_character():
-    character_data = {
-        "name": name,
-        "alter": alter,
-        "heldenklasse": heldenklasse,
-        "glueckspunkte": glueckspunkte,
-        "attribute": attribute,
-        "skills": skill_values,
-        "beschreibung": beschreibung,
-        "inventar": inventar,
-        "versteck": versteck,
-        "notizen": notizen
-    }
-    with open(f"{SAVE_DIR}/{name}_{heldenklasse}.json", "w") as file:
-        json.dump(character_data, file, indent=4)
+# 🔹 **Download der CSV-Datei**
+def download_csv():
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["Feld", "Wert"])
+    writer.writerow(["Name", name])
+    writer.writerow(["Alter", alter])
+    writer.writerow(["Heldenklasse", heldenklasse])
+    writer.writerow(["Glückspunkte", glueckspunkte])
+    writer.writerow(["Attribute", json.dumps(attribute)])
+    writer.writerow(["Fähigkeiten", json.dumps(skill_values)])
+    writer.writerow(["Beschreibung", json.dumps(beschreibung)])
+    writer.writerow(["Inventar", ", ".join(inventar)])
+    writer.writerow(["Versteck", versteck])
+    writer.writerow(["Notizen", notizen])
+    return output.getvalue()
 
-    with open(f"{SAVE_DIR}/{name}_{heldenklasse}.csv", "w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Feld", "Wert"])
-        writer.writerow(["Name", name])
-        writer.writerow(["Alter", alter])
-        writer.writerow(["Heldenklasse", heldenklasse])
-        writer.writerow(["Glückspunkte", glueckspunkte])
-        writer.writerow(["Attribute", attribute])
-        writer.writerow(["Fähigkeiten", skill_values])
-        writer.writerow(["Beschreibung", beschreibung])
-        writer.writerow(["Inventar", ", ".join(inventar)])
-        writer.writerow(["Versteck", versteck])
-        writer.writerow(["Notizen", notizen])
+st.download_button(
+    label="📥 CSV herunterladen",
+    data=download_csv(),
+    file_name=f"{name}_{heldenklasse}.csv",
+    mime="text/csv"
+)
 
-if st.button("Speichern"):
-    save_character()
-    st.success("Charakter gespeichert!")
+# 🔹 **Upload einer CSV-Datei**
+uploaded_file = st.file_uploader("Lade eine CSV-Datei hoch", type="csv")
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
+    
+    # Laden der Werte
+    name = df[df["Feld"] == "Name"]["Wert"].values[0]
+    alter = int(df[df["Feld"] == "Alter"]["Wert"].values[0])
+    heldenklasse = df[df["Feld"] == "Heldenklasse"]["Wert"].values[0]
+    glueckspunkte = int(df[df["Feld"] == "Glückspunkte"]["Wert"].values[0])
+    attribute = json.loads(df[df["Feld"] == "Attribute"]["Wert"].values[0])
+    skill_values = json.loads(df[df["Feld"] == "Fähigkeiten"]["Wert"].values[0])
+    beschreibung = json.loads(df[df["Feld"] == "Beschreibung"]["Wert"].values[0])
+    inventar = df[df["Feld"] == "Inventar"]["Wert"].values[0].split(", ")
+    versteck = df[df["Feld"] == "Versteck"]["Wert"].values[0]
+    notizen = df[df["Feld"] == "Notizen"]["Wert"].values[0]
 
-# 🔹 **Laden eines gespeicherten Charakters**
-if st.button("Laden"):
-    files = [f for f in os.listdir(SAVE_DIR) if f.endswith(".json")]
-    if files:
-        file_choice = st.selectbox("Wähle eine Datei:", files)
-        if st.button("Charakter laden"):
-            with open(f"{SAVE_DIR}/{file_choice}", "r") as file:
-                data = json.load(file)
-                name = data["name"]
-                alter = data["alter"]
-                heldenklasse = data["heldenklasse"]
-                glueckspunkte = data["glueckspunkte"]
-                attribute = data["attribute"]
-                skill_values = data["skills"]
-                beschreibung = data["beschreibung"]
-                inventar = data["inventar"]
-                versteck = data["versteck"]
-                notizen = data["notizen"]
-                st.success(f"Charakter {name} geladen!")
+    st.success(f"Charakter **{name}** wurde aus der CSV geladen!")
 
 # 🔹 **PDF-Generierung**
 class PDF(FPDF):
