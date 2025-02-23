@@ -19,7 +19,19 @@ name = st.text_input("Name des Charakters", value=st.session_state.get("name", "
 alter = st.slider("Alter", 10, 15, st.session_state.get("alter", 12))
 
 # Heldenklasse
-heldenklasse = st.selectbox("Heldenklasse", list(heldenklassen.keys()), index=list(heldenklassen.keys()).index(st.session_state.get("heldenklasse", "Bücherwurm")))
+# Standardwert setzen, falls noch nicht in session_state
+if "heldenklasse" not in st.session_state:
+    st.session_state.heldenklasse = "Bücherwurm"
+
+# `selectbox` mit sicherem Index
+heldenklasse = st.selectbox(
+    "Heldenklasse",
+    list(heldenklassen.keys()),
+    index=list(heldenklassen.keys()).index(st.session_state.heldenklasse)  # Jetzt sicher!
+)
+
+# Aktualisiere session_state nach Auswahl
+st.session_state.heldenklasse = heldenklasse
 
 # Attribute mit Slidern
 st.subheader("Attribute")
