@@ -111,25 +111,36 @@ st.download_button(
 # 🔹 **Upload einer CSV-Datei**
 uploaded_file = st.file_uploader("Lade eine CSV-Datei hoch", type="csv")
 if uploaded_file:
-    # Datei in einen StringIO-Stream umwandeln
-    stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-    
-    # CSV-Datei mit Pandas einlesen
-    df = pd.read_csv(stringio)
-    
-    # Laden der Werte
-    name = df[df["Feld"] == "Name"]["Wert"].values[0]
-    alter = int(df[df["Feld"] == "Alter"]["Wert"].values[0])
-    heldenklasse = df[df["Feld"] == "Heldenklasse"]["Wert"].values[0]
-    glueckspunkte = int(df[df["Feld"] == "Glückspunkte"]["Wert"].values[0])
-    attribute = json.loads(df[df["Feld"] == "Attribute"]["Wert"].values[0])
-    skill_values = json.loads(df[df["Feld"] == "Fähigkeiten"]["Wert"].values[0])
-    beschreibung = json.loads(df[df["Feld"] == "Beschreibung"]["Wert"].values[0])
-    inventar = df[df["Feld"] == "Inventar"]["Wert"].values[0].split(", ")
-    versteck = df[df["Feld"] == "Versteck"]["Wert"].values[0]
-    notizen = df[df["Feld"] == "Notizen"]["Wert"].values[0]
+    try:
+        # Datei in einen lesbaren Stream umwandeln
+        bytes_data = uploaded_file.getvalue()
+        stringio = StringIO(bytes_data.decode("utf-8"))
+        
+        # CSV-Datei mit Pandas einlesen
+        df = pd.read_csv(stringio)
 
-    st.success(f"Charakter **{name}** wurde aus der CSV geladen!")
+        # Prüfen, ob die Datei die erwarteten Spalten hat
+        required_columns = ["Feld", "Wert"]
+        if not all(col in df.columns for col in required_columns):
+            st.error("⚠️ Fehler: Die hochgeladene Datei hat nicht die richtigen Spalten!")
+        else:
+            # Werte aus der CSV-Datei extrahieren
+            name = df[df["Feld"] == "Name"]["Wert"].values[0]
+            alter = int(df[df["Feld"] == "Alter"]["Wert"].values[0])
+            heldenklasse = df[df["Feld"] == "Heldenklasse"]["Wert"].values[0]
+            glueckspunkte = int(df[df["Feld"] == "Glückspunkte"]["Wert"].values[0])
+            attribute = json.loads(df[df["Feld"] == "Attribute"]["Wert"].values[0])
+            skill_values = json.loads(df[df["Feld"] == "Fähigkeiten"]["Wert"].values[0])
+            beschreibung = json.loads(df[df["Feld"] == "Beschreibung"]["Wert"].values[0])
+            inventar = df[df["Feld"] == "Inventar"]["Wert"].values[0].split(", ")
+            versteck = df[df["Feld"] == "Versteck"]["Wert"].values[0]
+            notizen = df[df["Feld"] == "Notizen"]["Wert"].values[0]
+
+            st.success(f"✅ Charakter **{name}** wurde erfolgreich aus der CSV geladen!")
+
+    except Exception as e:
+        st.error(f"⚠️ Fehler beim Verarbeiten der Datei: {e}")
+
 
 
 # 🔹 **PDF-Generierung**
