@@ -159,6 +159,10 @@ if uploaded_file:
 
             st.success(f"✅ Charakter **{st.session_state.name}** wurde erfolgreich aus der CSV geladen!")
 
+            # Füge den "Aktualisieren"-Button hinzu
+            if st.button("🔄 Aktualisieren"):
+                st.rerun()  # Die gesamte App wird neu geladen
+
     except Exception as e:
         st.error(f"⚠️ Fehler beim Verarbeiten der Datei: {e}")
 
