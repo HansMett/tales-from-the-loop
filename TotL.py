@@ -18,7 +18,18 @@ st.title("Tales from the Loop - Heldenbogen")
 name = st.text_input("Name des Charakters", value=st.session_state.get("name", ""))
 alter = st.slider("Alter", 10, 15, st.session_state.get("alter", 12))
 
-# Heldenklasse
+# 🔹 Heldenklassen definieren **vor** der Nutzung
+heldenklassen = {
+    "Bücherwurm": ["Berechnen", "Ermitteln", "Begreifen"],
+    "Computernerd": ["Berechnen", "Programmieren", "Begreifen"],
+    "Bauer": ["Kraftakt", "Bewegen", "Tüfteln"],
+    "Sportler": ["Kraftakt", "Bewegen", "Kontakte"],
+    "Klassenliebling": ["Kontakte", "Schmeicheln", "Führen"],
+    "Rocker": ["Bewegen", "Schmeicheln", "Einfühlen"],
+    "Troublemaker": ["Kraftakt", "Schleichen", "Führen"],
+    "Sonderling": ["Schleichen", "Ermitteln", "Einfühlen"]
+}
+
 # Standardwert setzen, falls noch nicht in session_state
 if "heldenklasse" not in st.session_state:
     st.session_state.heldenklasse = "Bücherwurm"
@@ -30,17 +41,9 @@ heldenklasse = st.selectbox(
     index=list(heldenklassen.keys()).index(st.session_state.heldenklasse)  # Jetzt sicher!
 )
 
-# Aktualisiere session_state nach Auswahl
+# Aktualisiere `session_state`, falls der Nutzer eine neue Klasse wählt
 st.session_state.heldenklasse = heldenklasse
 
-# Attribute mit Slidern
-st.subheader("Attribute")
-attribute = {
-    "Körper": st.slider("Körper", 1, 5, st.session_state.get("attribute", {}).get("Körper", 1)),
-    "Technik": st.slider("Technik", 1, 5, st.session_state.get("attribute", {}).get("Technik", 1)),
-    "Herz": st.slider("Herz", 1, 5, st.session_state.get("attribute", {}).get("Herz", 1)),
-    "Verstand": st.slider("Verstand", 1, 5, st.session_state.get("attribute", {}).get("Verstand", 1)),
-}
 
 # Fähigkeiten mit `session_state`
 st.subheader("Fähigkeiten")
