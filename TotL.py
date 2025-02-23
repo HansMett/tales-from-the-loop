@@ -14,76 +14,48 @@ if not os.path.exists(SAVE_DIR):
 # Titel der App
 st.title("Tales from the Loop - Heldenbogen")
 
-# Eingabe: Name und Alter
-name = st.text_input("Name des Charakters")
-alter = st.slider("Alter", 10, 15, 12)  # Min, Max, Standardwert
+# Eingabe: Name und Alter (mit `session_state`)
+name = st.text_input("Name des Charakters", value=st.session_state.get("name", ""))
+alter = st.slider("Alter", 10, 15, st.session_state.get("alter", 12))
 
-# Glückspunkte (15 - Alter)
-st.text("Glückspunkte")
-glueckspunkte = 15 - alter
-cols = st.columns(glueckspunkte)
-glueck_checkboxes = [cols[i].checkbox("", key=f"glueck_{i}") for i in range(glueckspunkte)]
-
-# Heldenklassen mit Kernfähigkeiten
-heldenklassen = {
-    "Bücherwurm": ["Berechnen", "Ermitteln", "Begreifen"],
-    "Computernerd": ["Berechnen", "Programmieren", "Begreifen"],
-    "Bauer": ["Kraftakt", "Bewegen", "Tüfteln"],
-    "Sportler": ["Kraftakt", "Bewegen", "Kontakte"],
-    "Klassenliebling": ["Kontakte", "Schmeicheln", "Führen"],
-    "Rocker": ["Bewegen", "Schmeicheln", "Einfühlen"],
-    "Troublemaker": ["Kraftakt", "Schleichen", "Führen"],
-    "Sonderling": ["Schleichen", "Ermitteln", "Einfühlen"]
-}
-heldenklasse = st.selectbox("Heldenklasse", list(heldenklassen.keys()))
-kernfähigkeiten = heldenklassen[heldenklasse]
+# Heldenklasse
+heldenklasse = st.selectbox("Heldenklasse", list(heldenklassen.keys()), index=list(heldenklassen.keys()).index(st.session_state.get("heldenklasse", "Bücherwurm")))
 
 # Attribute mit Slidern
 st.subheader("Attribute")
 attribute = {
-    "Körper": st.slider("Körper", 1, 5, 1),
-    "Technik": st.slider("Technik", 1, 5, 1),
-    "Herz": st.slider("Herz", 1, 5, 1),
-    "Verstand": st.slider("Verstand", 1, 5, 1),
+    "Körper": st.slider("Körper", 1, 5, st.session_state.get("attribute", {}).get("Körper", 1)),
+    "Technik": st.slider("Technik", 1, 5, st.session_state.get("attribute", {}).get("Technik", 1)),
+    "Herz": st.slider("Herz", 1, 5, st.session_state.get("attribute", {}).get("Herz", 1)),
+    "Verstand": st.slider("Verstand", 1, 5, st.session_state.get("attribute", {}).get("Verstand", 1)),
 }
 
-# Warnung, falls Attributpunkte nicht dem Alter entsprechen
-gesamt_attributpunkte = sum(attribute.values())
-if gesamt_attributpunkte != alter:
-    st.warning(f"⚠️ Die Summe der Attributpunkte muss genau {alter} betragen! (Derzeit: {gesamt_attributpunkte})")
-
-# Fähigkeiten (2 Spalten)
+# Fähigkeiten mit `session_state`
 st.subheader("Fähigkeiten")
-skills = [
-    "Schleichen", "Kraftakt", "Bewegen", "Tüfteln", "Programmieren", "Berechnen",
-    "Kontakte", "Schmeicheln", "Führen", "Ermitteln", "Begreifen", "Einfühlen"
-]
 skill_values = {}
 cols = st.columns(6)
 for i, skill in enumerate(skills):
-    max_wert = 3 if skill in kernfähigkeiten else 1
-    skill_values[skill] = cols[i % 6].slider(f"{skill}", 0, max_wert, 0)
+    max_wert = 3 if skill in heldenklassen.get(heldenklasse, []) else 1
+    skill_values[skill] = cols[i % 6].slider(f"{skill}", 0, max_wert, st.session_state.get("skill_values", {}).get(skill, 0))
 
-# Warnung, falls nicht genau 10 Skill-Punkte verteilt wurden
-gesamt_skills = sum(skill_values.values())
-if gesamt_skills != 10:
-    st.warning(f"⚠️ Es müssen genau 10 Punkte auf die Fähigkeiten verteilt werden! (Derzeit: {gesamt_skills})")
-
-# Charakterbeschreibung
+# Charakterbeschreibung mit `session_state`
 st.subheader("Charakterbeschreibung")
 beschreibung = {
-    "Antrieb": st.text_area("Antrieb"),
-    "Problem": st.text_area("Problem"),
-    "Stolz": st.text_area("Stolz"),
-    "Beschreibung": st.text_area("Beschreibung"),
-    "Lieblingslied": st.text_input("Lieblingslied 🎵"),
+    "Antrieb": st.text_area("Antrieb", value=st.session_state.get("beschreibung", {}).get("Antrieb", "")),
+    "Problem": st.text_area("Problem", value=st.session_state.get("beschreibung", {}).get("Problem", "")),
+    "Stolz": st.text_area("Stolz", value=st.session_state.get("beschreibung", {}).get("Stolz", "")),
+    "Beschreibung": st.text_area("Beschreibung", value=st.session_state.get("beschreibung", {}).get("Beschreibung", "")),
+    "Lieblingslied": st.text_input("Lieblingslied 🎵", value=st.session_state.get("beschreibung", {}).get("Lieblingslied", "")),
 }
 
-# Inventar & Notizen
+# Inventar mit `session_state`
 st.subheader("Inventar")
-inventar = [st.text_input(f"Gegenstand {i+1}") for i in range(3)]
-versteck = st.text_area("Versteck")
-notizen = st.text_area("Zusätzliche Notizen")
+inventar = [st.text_input(f"Gegenstand {i+1}", value=st.session_state.get("inventar", [""])[i]) for i in range(3)]
+
+# Versteck & Notizen mit `session_state`
+versteck = st.text_area("Versteck", value=st.session_state.get("versteck", ""))
+notizen = st.text_area("Zusätzliche Notizen", value=st.session_state.get("notizen", ""))
+
 
 # 🔹 **Download der CSV-Datei**
 def download_csv():
@@ -125,22 +97,23 @@ if uploaded_file:
         if not all(col in df.columns for col in required_columns):
             st.error("⚠️ Fehler: Die hochgeladene Datei hat nicht die richtigen Spalten!")
         else:
-            # Werte aus der CSV-Datei extrahieren
-            name = df[df["Feld"] == "Name"]["Wert"].values[0]
-            alter = int(df[df["Feld"] == "Alter"]["Wert"].values[0])
-            heldenklasse = df[df["Feld"] == "Heldenklasse"]["Wert"].values[0]
-            glueckspunkte = int(df[df["Feld"] == "Glückspunkte"]["Wert"].values[0])
-            attribute = json.loads(df[df["Feld"] == "Attribute"]["Wert"].values[0])
-            skill_values = json.loads(df[df["Feld"] == "Fähigkeiten"]["Wert"].values[0])
-            beschreibung = json.loads(df[df["Feld"] == "Beschreibung"]["Wert"].values[0])
-            inventar = df[df["Feld"] == "Inventar"]["Wert"].values[0].split(", ")
-            versteck = df[df["Feld"] == "Versteck"]["Wert"].values[0]
-            notizen = df[df["Feld"] == "Notizen"]["Wert"].values[0]
+            # Werte aus der CSV-Datei extrahieren und in `session_state` speichern
+            st.session_state.name = df[df["Feld"] == "Name"]["Wert"].values[0]
+            st.session_state.alter = int(df[df["Feld"] == "Alter"]["Wert"].values[0])
+            st.session_state.heldenklasse = df[df["Feld"] == "Heldenklasse"]["Wert"].values[0]
+            st.session_state.glueckspunkte = int(df[df["Feld"] == "Glückspunkte"]["Wert"].values[0])
+            st.session_state.attribute = json.loads(df[df["Feld"] == "Attribute"]["Wert"].values[0])
+            st.session_state.skill_values = json.loads(df[df["Feld"] == "Fähigkeiten"]["Wert"].values[0])
+            st.session_state.beschreibung = json.loads(df[df["Feld"] == "Beschreibung"]["Wert"].values[0])
+            st.session_state.inventar = df[df["Feld"] == "Inventar"]["Wert"].values[0].split(", ")
+            st.session_state.versteck = df[df["Feld"] == "Versteck"]["Wert"].values[0]
+            st.session_state.notizen = df[df["Feld"] == "Notizen"]["Wert"].values[0]
 
-            st.success(f"✅ Charakter **{name}** wurde erfolgreich aus der CSV geladen!")
+            st.success(f"✅ Charakter **{st.session_state.name}** wurde erfolgreich aus der CSV geladen!")
 
     except Exception as e:
         st.error(f"⚠️ Fehler beim Verarbeiten der Datei: {e}")
+
 
 
 
