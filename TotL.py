@@ -87,6 +87,9 @@ inventar = [st.text_input(f"Gegenstand {i+1}", value=session_inventar[i]) for i 
 versteck = st.text_area("Versteck", value=st.session_state.get("versteck", ""))
 notizen = st.text_area("Zusätzliche Notizen", value=st.session_state.get("notizen", ""))
 
+# 🔹 Glückspunkte berechnen (falls nicht vorhanden)
+glueckspunkte = 15 - alter
+
 
 # 🔹 **Download der CSV-Datei**
 def download_csv():
@@ -96,7 +99,7 @@ def download_csv():
     writer.writerow(["Name", name])
     writer.writerow(["Alter", alter])
     writer.writerow(["Heldenklasse", heldenklasse])
-    writer.writerow(["Glückspunkte", glueckspunkte])
+    writer.writerow(["Glückspunkte", st.session_state.get("glueckspunkte", 15 - alter)])  # Sicherstellen, dass `glueckspunkte` existiert
     writer.writerow(["Attribute", json.dumps(attribute)])
     writer.writerow(["Fähigkeiten", json.dumps(skill_values)])
     writer.writerow(["Beschreibung", json.dumps(beschreibung)])
@@ -104,6 +107,7 @@ def download_csv():
     writer.writerow(["Versteck", versteck])
     writer.writerow(["Notizen", notizen])
     return output.getvalue()
+
 
 st.download_button(
     label="📥 CSV herunterladen",
