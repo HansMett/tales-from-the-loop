@@ -90,6 +90,13 @@ notizen = st.text_area("Zusätzliche Notizen", value=st.session_state.get("notiz
 # 🔹 Glückspunkte berechnen (falls nicht vorhanden)
 glueckspunkte = 15 - alter
 
+# 🔹 Attribute sicherstellen (falls nicht vorhanden)
+attribute = st.session_state.get("attribute", {
+    "Körper": 1,
+    "Technik": 1,
+    "Herz": 1,
+    "Verstand": 1
+})
 
 # 🔹 **Download der CSV-Datei**
 def download_csv():
@@ -99,14 +106,20 @@ def download_csv():
     writer.writerow(["Name", name])
     writer.writerow(["Alter", alter])
     writer.writerow(["Heldenklasse", heldenklasse])
-    writer.writerow(["Glückspunkte", st.session_state.get("glueckspunkte", 15 - alter)])  # Sicherstellen, dass `glueckspunkte` existiert
-    writer.writerow(["Attribute", json.dumps(attribute)])
-    writer.writerow(["Fähigkeiten", json.dumps(skill_values)])
-    writer.writerow(["Beschreibung", json.dumps(beschreibung)])
-    writer.writerow(["Inventar", ", ".join(inventar)])
-    writer.writerow(["Versteck", versteck])
-    writer.writerow(["Notizen", notizen])
+    writer.writerow(["Glückspunkte", st.session_state.get("glueckspunkte", 15 - alter)])
+    writer.writerow(["Attribute", json.dumps(st.session_state.get("attribute", {
+        "Körper": 1,
+        "Technik": 1,
+        "Herz": 1,
+        "Verstand": 1
+    }))])
+    writer.writerow(["Fähigkeiten", json.dumps(st.session_state.get("skill_values", {}))])
+    writer.writerow(["Beschreibung", json.dumps(st.session_state.get("beschreibung", {}))])
+    writer.writerow(["Inventar", ", ".join(st.session_state.get("inventar", ["", "", ""]))])
+    writer.writerow(["Versteck", st.session_state.get("versteck", "")])
+    writer.writerow(["Notizen", st.session_state.get("notizen", "")])
     return output.getvalue()
+
 
 
 st.download_button(
