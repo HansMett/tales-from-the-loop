@@ -152,18 +152,18 @@ class PDF(FPDF):
         self.ln(5)
 
     def add_section(self, title, content):
-    self.set_font("Arial", "B", 12)
-    self.cell(190, 7, title, border=1, ln=True, align="C")
-    self.set_font("Arial", size=10)
+        self.set_font("Arial", "B", 12)
+        self.cell(190, 7, title, border=1, ln=True, align="C")
+        self.set_font("Arial", size=10)
     
-    # **Sicherstellen, dass content ein String ist**
-    if content is None:
-        content = ""  # Falls None, leeren String setzen
-    elif isinstance(content, list):
-        content = "\n".join(content)  # Falls Liste, umwandeln
+        # **Sicherstellen, dass content ein String ist**
+        if content is None:
+            content = ""  # Falls None, leeren String setzen
+        elif isinstance(content, list):
+            content = "\n".join(content)  # Falls Liste, umwandeln
     
-    self.multi_cell(190, 6, str(content), border=1)  # In String umwandeln
-    self.ln(3)
+        self.multi_cell(190, 6, str(content), border=1)  # In String umwandeln
+        self.ln(3)
 
 
     def add_glueckspunkte(self, glueck):
