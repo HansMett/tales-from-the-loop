@@ -111,7 +111,11 @@ st.download_button(
 # 🔹 **Upload einer CSV-Datei**
 uploaded_file = st.file_uploader("Lade eine CSV-Datei hoch", type="csv")
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
+    # Datei in einen StringIO-Stream umwandeln
+    stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
+    
+    # CSV-Datei mit Pandas einlesen
+    df = pd.read_csv(stringio)
     
     # Laden der Werte
     name = df[df["Feld"] == "Name"]["Wert"].values[0]
@@ -126,6 +130,7 @@ if uploaded_file:
     notizen = df[df["Feld"] == "Notizen"]["Wert"].values[0]
 
     st.success(f"Charakter **{name}** wurde aus der CSV geladen!")
+
 
 # 🔹 **PDF-Generierung**
 class PDF(FPDF):
