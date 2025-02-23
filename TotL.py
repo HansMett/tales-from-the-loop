@@ -45,13 +45,24 @@ heldenklasse = st.selectbox(
 st.session_state.heldenklasse = heldenklasse
 
 
-# Fähigkeiten mit `session_state`
+# 🔹 Fähigkeiten definieren **vor** der Nutzung
+skills = [
+    "Schleichen", "Kraftakt", "Bewegen", "Tüfteln", "Programmieren", "Berechnen",
+    "Kontakte", "Schmeicheln", "Führen", "Ermitteln", "Begreifen", "Einfühlen"
+]
+
+# 🔹 Fähigkeiten mit `session_state`
 st.subheader("Fähigkeiten")
 skill_values = {}
 cols = st.columns(6)
 for i, skill in enumerate(skills):
     max_wert = 3 if skill in heldenklassen.get(heldenklasse, []) else 1
-    skill_values[skill] = cols[i % 6].slider(f"{skill}", 0, max_wert, st.session_state.get("skill_values", {}).get(skill, 0))
+    skill_values[skill] = cols[i % 6].slider(
+        f"{skill}",
+        0,
+        max_wert,
+        st.session_state.get("skill_values", {}).get(skill, 0)
+    )
 
 # Charakterbeschreibung mit `session_state`
 st.subheader("Charakterbeschreibung")
