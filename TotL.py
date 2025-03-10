@@ -90,13 +90,22 @@ notizen = st.text_area("Zusätzliche Notizen", value=st.session_state.get("notiz
 # 🔹 Glückspunkte berechnen (falls nicht vorhanden)
 glueckspunkte = 15 - alter
 
-# 🔹 Attribute sicherstellen (falls nicht vorhanden)
-attribute = st.session_state.get("attribute", {
-    "Körper": 1,
-    "Technik": 1,
-    "Herz": 1,
-    "Verstand": 1
+
 })
+# Attribute mit Slidern
+st.subheader("Attribute")
+attribute = {
+    "Körper": st.slider("Körper", 1, 5, 1),
+    "Technik": st.slider("Technik", 1, 5, 1),
+    "Herz": st.slider("Herz", 1, 5, 1),
+    "Verstand": st.slider("Verstand", 1, 5, 1),
+}
+
+# Warnung, falls Attributpunkte nicht dem Alter entsprechen
+gesamt_attributpunkte = sum(attribute.values())
+if gesamt_attributpunkte != alter:
+    st.warning(f"⚠️ Die Summe der Attributpunkte muss genau {alter} betragen! (Derzeit: {gesamt_attributpunkte})")
+
 
 # 🔹 **Download der CSV-Datei**
 def download_csv():
