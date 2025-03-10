@@ -18,6 +18,15 @@ st.title("Tales from the Loop - Heldenbogen")
 name = st.text_input("Name des Charakters", value=st.session_state.get("name", ""))
 alter = st.slider("Alter", 10, 15, st.session_state.get("alter", 12))
 
+# Attribute mit Slidern
+st.subheader("Attribute")
+attribute = {
+    "Körper": st.slider("Körper", 1, 5, 1),
+    "Technik": st.slider("Technik", 1, 5, 1),
+    "Herz": st.slider("Herz", 1, 5, 1),
+    "Verstand": st.slider("Verstand", 1, 5, 1),
+}
+
 # 🔹 Heldenklassen definieren **vor** der Nutzung
 heldenklassen = {
     "Bücherwurm": ["Berechnen", "Ermitteln", "Begreifen"],
@@ -92,14 +101,7 @@ glueckspunkte = 15 - alter
 
 
 
-# Attribute mit Slidern
-st.subheader("Attribute")
-attribute = {
-    "Körper": st.slider("Körper", 1, 5, 1),
-    "Technik": st.slider("Technik", 1, 5, 1),
-    "Herz": st.slider("Herz", 1, 5, 1),
-    "Verstand": st.slider("Verstand", 1, 5, 1),
-}
+
 
 # Warnung, falls Attributpunkte nicht dem Alter entsprechen
 gesamt_attributpunkte = sum(attribute.values())
