@@ -101,7 +101,10 @@ glueckspunkte = 15 - alter
 
 
 
-
+ Warnung, falls nicht genau 10 Skill-Punkte verteilt wurden
+gesamt_skills = sum(skill_values.values())
+if gesamt_skills != 10:
+    st.warning(f"⚠️ Es müssen genau 10 Punkte auf die Fähigkeiten verteilt werden! (Derzeit: {gesamt_skills})")
 
 # Warnung, falls Attributpunkte nicht dem Alter entsprechen
 gesamt_attributpunkte = sum(attribute.values())
