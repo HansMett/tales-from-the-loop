@@ -91,7 +91,7 @@ notizen = st.text_area("Zusätzliche Notizen", value=st.session_state.get("notiz
 glueckspunkte = 15 - alter
 
 
-})
+
 # Attribute mit Slidern
 st.subheader("Attribute")
 attribute = {
