@@ -16,7 +16,7 @@ st.title("Tales from the Loop - Heldenbogen")
 
 # Eingabe: Name und Alter (mit `session_state`)
 name = st.text_input("Name des Charakters", value=st.session_state.get("name", ""))
-
+st.session_state.name = name
 
 alter = st.slider("Alter", 10, 15, st.session_state.get("alter", 12))
 st.session_state.alter = alter  # Stelle sicher, dass das Alter im Session State aktualisiert wird
